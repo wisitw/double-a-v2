@@ -1,0 +1,204 @@
+#!/bin/bash
+
+printf "   \n"
+printf "      ______________  _____ __________        ___    ___       ____       _       __ \n"
+printf "     / ____/  _/ __ \/ ___//  _/ ____/  _    /   |  /   |     / __ \_____(_)___  / /_\n"
+printf "    / / __ / // /_/ /\__ \ / // /      (_)  / /| | / /| |    / /_/ / ___/ / __ \/ __/\n"
+printf "   / /_/ // // ____/___/ // // /___   _    / ___ |/ ___ |   / ____/ /  / / / / / /_  \n"
+printf "   \____/___/_/    /____/___/\____/  (_)  /_/  |_/_/  |_|  /_/   /_/  /_/_/ /_/\__/  \n"
+                                                                                  
+printf "\n\t\t  Hello, Welcome to Better Double A Fast Print App.\n\n"
+
+userAgent="Googlebot/2.1 (+http://www.google.com/bot.html)"
+sessionID="$1"
+
+if [ "$sessionID" = "" ]
+then
+  # sessionID="K1eKoG3hkJD22QTVmSp17k3Mp3ATU2Mv"
+  read -p "Please enter your Session ID: " -r sessionID
+fi
+
+#-------------------------------
+printf "\nStep 1: Uploading File\n\n"
+
+filePath=""
+
+while [ "$filePath" = "" ]
+do
+  read -p "Please enter your path to file [set2.pdf]: " -r filePath
+done
+
+printf "\n"
+outout=$(curl https://www.doubleafastprint.com/proxy/converts/upload -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H "User-Agent: $userAgent" -H "Cookie: DoubleaSessionID=$sessionID;" -F file=@"$filePath")
+step01=$!
+wait $step01
+
+printf "\n\nStep 1: Done!\n\n"
+#-------------------------------
+
+copies=""
+contentType=""
+filename=""
+oriFilename=""
+numberOfPages="1"
+printerId=""
+duplex=""
+paperSize="80"
+pagePerSheet="1"
+pageString=""
+pageRage=""
+
+
+if [[ $outout =~ \"filename\"\:\"([a-z0-9]+.[a-z0-9]+)\" ]]
+then
+  filename="${BASH_REMATCH[1]}"
+  printf "File Name: $filename\n"
+fi
+
+while [ "$filename" = "" ]
+do
+  read -p "File Name: " -r filename
+done
+
+while [ "$oriFilename" = "" ]
+do
+  read -p "File Nickname: " -r oriFilename
+done
+
+while [ "$contentType" = "" ]
+do
+  read -p "Print Mode [color/mono]: " -r contentType
+done
+
+while [ "$copies" = "" ]
+do
+  read -p "Copy: " -r copies
+done
+
+while [ "$duplex" = "" ]
+do
+  read -p "Print 2 sides [0/1]: " -r duplex
+done
+
+while [ "$pagePerSheet" = "" ]
+do
+  read -p "Page per Sheet [1,2,3,4,6,9]: " -r pagePerSheet
+done
+
+while [ "$pageRage" = "" ]
+do
+  read -p "Page Range [all]: " -r pageRage
+done
+
+
+printerList[1]="5992f36661f0b626f065d7db | คณะวิศวกรรมศาสตร์ จุฬาฯ ห้องสมุดคณะฯ ชั้น 3 ตึก 3"
+printerList[3]="5af2612e2e906004422a3213 | คณะวิศวกรรมศาสตร์ จุฬาฯ อาคารเจริญวิศวกรรม"
+printerList[2]="5c125bb60535b1e31bd94510 | คณะวิศวกรรมศาสตร์ จุฬาฯ อาคารเจริญวิศวกรรม เครื่อง 2"
+printerList[4]="5992f36661f0b626f065d7de | คณะวิศวกรรมศาสตร์ จุฬาฯ โถงชั้น 1 อาคาร 100 ปี เครื่องที่ 1"
+printerList[5]="5afd467583ba545739e7d2a3 | คณะวิศวกรรมศาสตร์ จุฬาฯ โถงชั้น 1 อาคาร 100 ปี เครื่องที่ 2"
+printerList[6]="5992f36661f0b626f065d7dc | คณะวิศวกรรมศาสตร์ จุฬาฯ ใกล้ร้านถ่ายเอกสาร ชั้น 1 ตึก 3 เครื่องที่ 1"
+printerList[7]="5afd467583ba545739e7d2ad | คณะวิศวกรรมศาสตร์ จุฬาฯ ใกล้ร้านถ่ายเอกสาร ชั้น 1 ตึก 3 เครื่องที่ 2"
+printerList[8]="5976b43861f0b602b453b84a | คณะวิศวกรรมศาสตร์ จุฬาฯ ศูนย์คอมพิวเตอร์ ชั้น 2 ตึก 3"
+
+printerList[9]="5c6e16d5c4c61100016961a3 | B2S CentralPlaza Rama 9 (7th Fl.)"
+printerList[10]="5b88a31f9fa18da88f650a11 | B2S Central Eastville (1st Fl.)"
+printerList[11]="5c125bb60535b1e31bd9453f | B2S Major Ratchayothin"
+printerList[12]="5c125bb60535b1e31bd9451c | B2S Robinson Bangrak (3rd Fl.)"
+printerList[13]="5c125bb60535b1e31bd9451b | B2S CDS Silom Complex (4nd Fl.)"
+printerList[14]="5b88a31f9fa18da88f6509f9 | B2S CentralPlaza Lardprao (G Fl.)"
+printerList[15]="5bbccb96f8a79901fce74812 | Jumbo Gift Central World Fl.5"
+printerList[16]="5ba1f880bd2f790001267c2a | B2S Central World (4th Fl.)"
+
+
+while [ "$printerId" = "" ]
+do
+  printf "\n - Please select printer ID - \n"
+  for i in "${printerList[@]}"
+  do
+    printf "  > $i \n"
+  done
+  read -p "Printer ID: " -r printerId
+done
+
+
+if [ "$pageRage" = "all" ]
+then
+  pageString = ""
+else
+  pageRage=${pageRage//" "/""}
+  array=$(echo $pageRage | tr "," "\n")
+  for page in $array
+  do
+    if [[ $page =~ ^[[:space:]]*([0-9]+)[[:space:]]*-[[:space:]]*([0-9]+)[[:space:]]*$ ]]
+    then
+      c=""
+      from="${BASH_REMATCH[1]}"
+      to="${BASH_REMATCH[2]}"
+      if (( $from <= $to ))
+      then
+        for ((i=from; i<=to; i++))
+        do
+          c="$c -F "pages[]"=$i"
+        done
+      else
+        for ((i=to; i<=from; i++))
+        do
+          c="$c -F "pages[]"=$i"
+        done
+      fi
+      echo $c
+    else
+      c="-F "pages[]"=$page"
+      echo $c
+    fi
+    pageString="$pageString $c"
+  done
+fi
+
+
+printf "Step 2: Update Print Setting\n"
+printf "\n"
+printf 'DoubleaSessionID\t%s; \ncopies\t\t\t%s \ncontentType\t\t%s \nprinterId\t\t%s \nduplex\t\t\t%s \npagePerSheet\t\t%s \npaperSize\t\t%s \nfilename\t\t%s \noriFilename\t\t%s \nnumberOfPages\t\t%s \npageString\t\t%s \n\n' "$sessionID" "$copies" "$contentType" "$printerId" "$duplex" "$pagePerSheet" "$paperSize" "$filename" "$oriFilename" "$numberOfPages" "$pageString"
+
+printf "\n"
+outout=$(curl https://www.doubleafastprint.com/proxy/tasks -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H "User-Agent: $userAgent" -H "Cookie: DoubleaSessionID=$sessionID;" -F copies="$copies" -F contentType="$contentType" -F printerId="$printerId" -F duplex="$duplex" -F pagePerSheet="$pagePerSheet" -F paperSize="$paperSize" -F filename="$filename" -F oriFilename="$oriFilename" -F numberOfPages="$numberOfPages" $pageString)
+step02=$!
+wait $step02
+
+printf "\n\nStep 2: Done!\n\n"
+#-------------------------------
+
+printf "Step 3: Send Print Command\n"
+
+taskID=""
+printNow="no"
+printf "$outout\n";
+if [[ $outout =~ \,\"id\"\:\"([a-z0-9]+)\" ]]
+then
+  taskID="${BASH_REMATCH[1]}"
+  printf "Task ID: $taskID\n"
+fi
+while [ "$taskID" = "" ]
+do
+  read -p "Please enter task ID: " -r taskID
+done
+
+while [ "$printNow" != "yes" ]
+do
+  read -p "Print Now [yes/no]: " -r printNow
+done
+
+printf "\n"
+
+curl "https://www.doubleafastprint.com/proxy/tasks/$taskID/print" -X POST -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H "User-Agent: $userAgent" -H "Cookie: DoubleaSessionID=$sessionID;"
+
+step03=$!
+
+wait $step03
+
+printf "\n\nStep 3: Sent!\n"
+
+# curl 'https://www.doubleafastprint.com/proxy/tasks/5d5269db055d650001bb0463/print' -X POST -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Origin: https://www.doubleafastprint.com' -H 'Accept-Encoding: gzip, deflate, br' -H 'Accept-Language: en,th;q=0.9' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36' -H 'Accept: */*' -H 'Referer: https://www.doubleafastprint.com/print/tasks/5d5269db055d650001bb0463' -H 'Cookie: _ga=GA1.2.2009891515.1560691279; _fbp=fb.1.1560691279702.1186735558; _gid=GA1.2.463133472.1565681021; DoubleaSessionID=xccvM8MfCwzgvTgf7bfkrLmMeg0Vu7Yo; _gat=1; _gat_UA-123163642-1=1' -H 'Connection: keep-alive' -H 'Content-Length: 0' --compressed
+
+
+ 
